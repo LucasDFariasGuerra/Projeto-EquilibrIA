@@ -1,8 +1,21 @@
 import utils
-import re # Importação necessária para usar expressões regulares (regex)
+import re 
+import random 
+import string 
 
 # A nossa "base de dados" em memória vive neste módulo.
 usuarios = {}
+
+# Função auxiliar para gerar códigos de backup
+def gerar_backup_codes(num_codes=4, code_length=8):
+    """Gera uma lista de códigos de backup únicos de uso único."""
+    # Usando letras maiúsculas e números para os códigos
+    caracteres = string.ascii_uppercase + string.digits
+    codes = set()
+    while len(codes) < num_codes:
+        code = ''.join(random.choices(caracteres, k=code_length))
+        codes.add(code)
+    return list(codes)
 
 def get_valid_input(prompt, valid_options):
     utils.limpar_tela()
@@ -28,14 +41,30 @@ def validar_senha(password):
         return False, "A senha deve conter pelo menos um número."
     
     # Verifica se contém pelo menos um caractere especial (não-alfanumérico)
-    # A regex r'[!@#$%^&*(),.?":{}|<>]' ou r'[^\w\s]' pode ser usada para cobrir especiais
-    # Usando r'[^\w\s]' que significa qualquer coisa que não seja letra, número ou espaço
     if not re.search(r'[^\w\s]', password):
         return False, "A senha deve conter pelo menos um caractere especial (ex: !, @, #)."
         
     return True, ""
 
-
+# NOVA FUNÇÃO: Força a troca de senha após uso de código de backup
+def trocar_senha_forcada(username):
+    user_data = usuarios[username]
+    utils.limpar_tela()
+    print(utils.COR_TITULO + "\n--- TROCA DE SENHA OBRIGATÓRIA ---")
+    print(utils.COR_AVISO + "Seu login foi feito com um código de backup. Por favor, cadastre uma nova senha.")
+    
+    while True:
+        nova_senha = input("Crie sua nova senha: ").strip()
+        valida, mensagem_erro = validar_senha(nova_senha)
+        if valida:
+            # Salva a nova senha
+            user_data['senha'] = nova_senha
+            print(utils.COR_SUCESSO + "\n✅ Senha alterada com sucesso! Seu acesso está seguro.")
+            break
+        else:
+            print(utils.COR_AVISO + f"❌ Senha fraca ou inválida: {mensagem_erro}")
+            print(utils.COR_AVISO + "Requisitos: 4-22 caracteres, 1 número, 1 caractere especial.")
+            
 def cadastrar_usuario():
     utils.limpar_tela()
     print(utils.COR_TITULO + "\n--- CADASTRO ---")
@@ -49,7 +78,16 @@ def cadastrar_usuario():
         else:
             break
     
-    # INÍCIO DA VALIDAÇÃO DE SENHA APRIMORADA
+    # Solicitar e validar Email com domínio @ufrpe.br
+    while True:
+        email = input("Digite seu Email (@ufrpe.br obrigatório): ").strip()
+        # Regex para garantir que o email tem caracteres antes do @ e termina exatamente com @ufrpe.br
+        if re.fullmatch(r"[\w\.-]+@ufrpe\.br$", email):
+            break
+        else:
+            print(utils.COR_AVISO + "❌ Email inválido. O domínio deve ser @ufrpe.br.")
+
+    # Validação de Senha 
     while True:
         password = input("Crie uma senha: ").strip()
         valida, mensagem_erro = validar_senha(password)
@@ -58,7 +96,6 @@ def cadastrar_usuario():
         else:
             print(utils.COR_AVISO + f"❌ Senha fraca ou inválida: {mensagem_erro}")
             print(utils.COR_AVISO + "Requisitos: 4-22 caracteres, 1 número, 1 caractere especial.")
-    # FIM DA VALIDAÇÃO DE SENHA APRIMORADA
 
     nome_completo = input("Digite seu nome completo: ").strip()
     
@@ -108,8 +145,13 @@ def cadastrar_usuario():
         ['iniciante', 'intermediario', 'avancado']
     )
     
+    # Geração dos Backup Codes
+    backup_codes = gerar_backup_codes()
+    
     usuarios[username] = {
         'senha': password,
+        'email': email, 
+        'backup_codes': backup_codes, 
         'nome': nome_completo,
         'sexo': sexo,
         'idade': idade,
@@ -118,23 +160,70 @@ def cadastrar_usuario():
         'objetivo': objetivo,
         'nivel_treino': nivel_treino
     }
+    
     print(utils.COR_SUCESSO + f"\n✅ Usuário {username} cadastrado com sucesso!")
+    print(utils.COR_TITULO + "\n*** CÓDIGOS DE BACKUP ***")
+    print(utils.COR_AVISO + "GUARDE ESTES CÓDIGOS EM LOCAL SEGURO! Eles servem para login único caso esqueça a senha.")
+    for code in backup_codes:
+         print(f"- {code}")
+    print(utils.COR_TITULO + "***************************")
 
+# FUNÇÃO VERIFICAR LOGIN REESTRUTURADA
 def verificar_login():
     utils.limpar_tela()
     print(utils.COR_TITULO + "\n--- ACESSAR CONTA ---")
     username = input("Digite o nome de usuário: ").strip()
-    password = input("Digite a senha: ").strip()
 
-    if username in usuarios and usuarios[username]['senha'] == password:
-        print(utils.COR_SUCESSO + f"\n✅ Acesso liberado! Bem-vindo(a), {usuarios[username]['nome']}!")
-        return username
-    else:
-        print(utils.COR_ERRO + "\n❌ Usuário ou senha incorretos.")
+    if username not in usuarios:
+        print(utils.COR_ERRO + "\n❌ Usuário não encontrado.")
         return None
 
+    user_data = usuarios[username]
+    
+    # 1. TENTATIVA DE LOGIN COM SENHA NORMAL (ÚNICA OPÇÃO INICIAL)
+    password = input("Digite sua senha: ").strip()
+    
+    if user_data['senha'] == password:
+        print(utils.COR_SUCESSO + f"\n✅ Acesso liberado! Bem-vindo(a), {user_data['nome']}!")
+        return username
+    
+    # 2. SENHA INCORRETA -> LIBERAR "ESQUECI A SENHA"
+    else:
+        print(utils.COR_ERRO + "\n❌ Senha incorreta.")
+        
+        # Verifica se ainda há códigos de backup para oferecer a opção
+        if not user_data.get('backup_codes'):
+            print(utils.COR_AVISO + "Você não possui códigos de backup restantes.")
+            return None
+        
+        # Pergunta sobre "Esqueci a Senha"
+        usa_backup = input("Esqueceu a senha? Deseja tentar com um Código de Backup? (S/N): ").strip().upper()
+        
+        if usa_backup == 'S':
+            print(utils.COR_AVISO + f"Você tem {len(user_data['backup_codes'])} códigos de backup restantes.")
+            backup_code = input("Digite um Código de Backup: ").strip()
+            
+            # Tenta logar com Código de Backup
+            if backup_code in user_data['backup_codes']:
+                # O código é de uso único, então é removido
+                user_data['backup_codes'].remove(backup_code)
+                
+                print(utils.COR_SUCESSO + f"\n✅ Login bem-sucedido com Código de Backup! Bem-vindo(a), {user_data['nome']}!")
+                print(utils.COR_AVISO + f"⚠️ O código de backup usado foi invalidado.")
+                
+                # CHAMA A FUNÇÃO DE TROCA DE SENHA OBRIGATÓRIA
+                trocar_senha_forcada(username)
+                
+                return username 
+                
+            else:
+                print(utils.COR_ERRO + "\n❌ Código de Backup inválido ou já utilizado.")
+                return None
+        else:
+            return None # Usuário errou a senha e não quer usar o backup code
+
+
 def editar_usuario(username):
-    # Conteúdo da função editar_usuario (sem alterações)
     utils.limpar_tela()
     if username not in usuarios:
         print(utils.COR_ERRO + "\n❌ Usuário não encontrado. Ocorreu um erro.")
@@ -149,6 +238,19 @@ def editar_usuario(username):
     novo_nome = input(f"Nome completo ({user_data['nome']}): ").strip()
     if novo_nome:
         user_data['nome'] = novo_nome
+
+    # Edição de Email
+    while True:
+        novo_email_str = input(f"Email (@ufrpe.br obrigatório) ({user_data['email']}): ").strip()
+        if not novo_email_str: # Usuário pressionou Enter
+            break
+        # Regex para garantir que o email tem caracteres antes do @ e termina exatamente com @ufrpe.br
+        if re.fullmatch(r"[\w\.-]+@ufrpe\.br$", novo_email_str):
+            user_data['email'] = novo_email_str
+            break
+        else:
+            print(utils.COR_AVISO + "❌ Email inválido. O domínio deve ser @ufrpe.br.")
+
 
     while True:
         novo_sexo = input(f"Sexo (M/F) ({user_data['sexo']}): ").strip().upper()
