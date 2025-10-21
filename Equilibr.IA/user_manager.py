@@ -1,4 +1,5 @@
 import utils
+import re # Importação necessária para usar expressões regulares (regex)
 
 # A nossa "base de dados" em memória vive neste módulo.
 usuarios = {}
@@ -10,6 +11,30 @@ def get_valid_input(prompt, valid_options):
         if value in valid_options:
             return value
         print(utils.COR_ERRO + f"Opção inválida. Por favor, escolha uma das seguintes: {', '.join(valid_options)}")
+
+# Função auxiliar para validar a senha
+def validar_senha(password):
+    """
+    Valida a senha:
+    - Mínimo 4 e Máximo 22 caracteres.
+    - Obrigatório ter pelo menos 1 número.
+    - Obrigatório ter pelo menos 1 caractere especial.
+    """
+    if not (4 <= len(password) <= 22):
+        return False, "A senha deve ter entre 4 e 22 caracteres."
+    
+    # Verifica se contém pelo menos um número (0-9)
+    if not re.search(r'\d', password):
+        return False, "A senha deve conter pelo menos um número."
+    
+    # Verifica se contém pelo menos um caractere especial (não-alfanumérico)
+    # A regex r'[!@#$%^&*(),.?":{}|<>]' ou r'[^\w\s]' pode ser usada para cobrir especiais
+    # Usando r'[^\w\s]' que significa qualquer coisa que não seja letra, número ou espaço
+    if not re.search(r'[^\w\s]', password):
+        return False, "A senha deve conter pelo menos um caractere especial (ex: !, @, #)."
+        
+    return True, ""
+
 
 def cadastrar_usuario():
     utils.limpar_tela()
@@ -24,7 +49,17 @@ def cadastrar_usuario():
         else:
             break
     
-    password = input("Crie uma senha: ").strip()
+    # INÍCIO DA VALIDAÇÃO DE SENHA APRIMORADA
+    while True:
+        password = input("Crie uma senha: ").strip()
+        valida, mensagem_erro = validar_senha(password)
+        if valida:
+            break
+        else:
+            print(utils.COR_AVISO + f"❌ Senha fraca ou inválida: {mensagem_erro}")
+            print(utils.COR_AVISO + "Requisitos: 4-22 caracteres, 1 número, 1 caractere especial.")
+    # FIM DA VALIDAÇÃO DE SENHA APRIMORADA
+
     nome_completo = input("Digite seu nome completo: ").strip()
     
     while True:
@@ -98,9 +133,8 @@ def verificar_login():
         print(utils.COR_ERRO + "\n❌ Usuário ou senha incorretos.")
         return None
 
-# Adicione esta função ao final de user_manager.py
-
 def editar_usuario(username):
+    # Conteúdo da função editar_usuario (sem alterações)
     utils.limpar_tela()
     if username not in usuarios:
         print(utils.COR_ERRO + "\n❌ Usuário não encontrado. Ocorreu um erro.")
@@ -173,6 +207,7 @@ def editar_usuario(username):
 
 
 def excluir_usuario():
+    # Conteúdo da função excluir_usuario (sem alterações)
     utils.limpar_tela()
     print(utils.COR_TITULO + "\n--- EXCLUIR PERFIL ---")
     username = input("Digite o nome de usuário que deseja excluir: ").strip()
