@@ -1,4 +1,5 @@
-# <img width="236" height="189" alt="image" src="https://github.com/user-attachments/assets/6330a227-e9ae-40f4-8800-f81cc7d34db0" /> Equilibr.IA
+#<img width="217" height="216" alt="image" src="https://github.com/user-attachments/assets/e2b617a9-3116-4d76-b55d-aace90563ef2" />
+
 ## Sobre o App
 O Equilibr.IA tem capacidade de balancear o bem-estar físico com o mental, alinhadamente as limitações de cada indivíduo. 
 Calculando as taxas iniciais de uma pessoa e baseada nas suas vontades propor fichas de treino e dietas.
