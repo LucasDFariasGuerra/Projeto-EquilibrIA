@@ -1,12 +1,20 @@
 import utils
+import user_manager
 
-def gerar_sugestao_dieta(tmb, peso, objetivo):
+def gerar_sugestao_dieta(tmb, peso, objetivo, nivel_treino):
     utils.limpar_tela()
     if tmb <= 0 or peso <= 0:
         return utils.COR_ERRO + "Dados insuficientes para calcular a dieta."
 
     # Fator de atividade leve (exercício 1-3 dias/semana) - um ponto de partida
-    fator_atividade = 1.375
+    
+    if nivel_treino == 'iniciante': 
+        fator_atividade = 1.2
+    elif nivel_treino == 'intermediario':
+        fator_atividade = 1.375
+    elif nivel_treino == 'avancado':
+        fator_atividade = 1.55
+    
     calorias_manutencao = tmb * fator_atividade
 
     if objetivo == 'perder gordura':

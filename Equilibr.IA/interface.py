@@ -1,4 +1,3 @@
-# interface.py
 import health_calculator
 import suggestions 
 import utils
@@ -37,8 +36,8 @@ def exibir_dashboard(user_data):
     tmb = health_calculator.calcular_tmb(sexo, peso, altura, idade)
     
     # Usa as funções do módulo de sugestões
-    dieta_sugestao = suggestions.gerar_sugestao_dieta(tmb, peso, objetivo)
-    treino_sugestao = suggestions.gerar_sugestao_treino(nivel_treino, objetivo)
+    dieta_sugestao = suggestions.gerar_sugestao_dieta(tmb, peso, objetivo, nivel_treino)
+    treino_sugestao = suggestions.gerar_sugestao_treino(nivel_treino, objetivo,)
     
     # Exibe os resultados
     print(utils.COR_TITULO + "\n" + "="*20 + " SEU PAINEL DE SAÚDE " + "="*20)

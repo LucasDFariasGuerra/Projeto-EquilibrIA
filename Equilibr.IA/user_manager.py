@@ -140,7 +140,7 @@ def cadastrar_usuario():
         "Qual seu objetivo principal (perder gordura / manter peso / ganhar massa): ",
         ['perder gordura', 'manter peso', 'ganhar massa']
     )
-    nivel_treino = get_valid_input(
+    nivel_treino =  get_valid_input(
         "Qual seu nível de treino (iniciante / intermediario / avancado): ",
         ['iniciante', 'intermediario', 'avancado']
     )
