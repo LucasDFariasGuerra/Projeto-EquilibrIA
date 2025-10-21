@@ -7,7 +7,7 @@ import string
 usuarios = {}
 
 # Função auxiliar para gerar códigos de backup
-def gerar_backup_codes(num_codes=4, code_length=8):
+def gerar_backup_codes(num_codes=3, code_length=6):
     """Gera uma lista de códigos de backup únicos de uso único."""
     # Usando letras maiúsculas e números para os códigos
     caracteres = string.ascii_uppercase + string.digits
