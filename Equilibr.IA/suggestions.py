@@ -6,7 +6,6 @@ def gerar_sugestao_dieta(tmb, peso, objetivo, nivel_treino):
     if tmb <= 0 or peso <= 0:
         return utils.COR_ERRO + "Dados insuficientes para calcular a dieta."
 
-    # Fator de atividade leve (exercício 1-3 dias/semana) - um ponto de partida
     
     if nivel_treino == 'iniciante': 
         fator_atividade = 1.2
@@ -18,24 +17,21 @@ def gerar_sugestao_dieta(tmb, peso, objetivo, nivel_treino):
     calorias_manutencao = tmb * fator_atividade
 
     if objetivo == 'perder gordura':
-        calorias_alvo = calorias_manutencao - 400  # Déficit moderado
-        # Macros: Proteína alta, Gordura moderada, Carboidratos baixos
-        proteina_g = peso * 2.0  # 2.0g por kg de peso corporal
+        calorias_alvo = calorias_manutencao - 400  
+        proteina_g = peso * 2.0  
         gordura_g = (calorias_alvo * 0.30) / 9
         carboidratos_g = (calorias_alvo - (proteina_g * 4) - (gordura_g * 9)) / 4
     elif objetivo == 'ganhar massa':
-        calorias_alvo = calorias_manutencao + 300  # Superávit moderado
-        # Macros: Proteína alta, Carboidratos altos, Gordura moderada
+        calorias_alvo = calorias_manutencao + 300 
         proteina_g = peso * 1.8
         gordura_g = (calorias_alvo * 0.25) / 9
         carboidratos_g = (calorias_alvo - (proteina_g * 4) - (gordura_g * 9)) / 4
-    else:  # Manter peso
+    else:  #Manter peso
         calorias_alvo = calorias_manutencao
         proteina_g = peso * 1.6
         gordura_g = (calorias_alvo * 0.30) / 9
         carboidratos_g = (calorias_alvo - (proteina_g * 4) - (gordura_g * 9)) / 4
 
-    # Montando a string de sugestão
     sugestao = (
         f'Com base no seu objetivo de "{objetivo}", uma meta inicial seria de aproximadamente **{calorias_alvo:.0f} kcal** por dia.\n'
         f"Isto se traduz em:\n"

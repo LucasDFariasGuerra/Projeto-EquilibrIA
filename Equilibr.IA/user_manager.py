@@ -3,13 +3,12 @@ import re
 import random 
 import string 
 
-# A nossa "base de dados" em memória vive neste módulo.
+#A base de dados está neste módulo.
 usuarios = {}
 
-# Função auxiliar para gerar códigos de backup
-def gerar_backup_codes(num_codes=3, code_length=6):
+#Função auxiliar para gerar códigos de backup
+def gerar_backup_codes(num_codes=4, code_length=6):
     """Gera uma lista de códigos de backup únicos de uso único."""
-    # Usando letras maiúsculas e números para os códigos
     caracteres = string.ascii_uppercase + string.digits
     codes = set()
     while len(codes) < num_codes:
@@ -25,7 +24,6 @@ def get_valid_input(prompt, valid_options):
             return value
         print(utils.COR_ERRO + f"Opção inválida. Por favor, escolha uma das seguintes: {', '.join(valid_options)}")
 
-# Função auxiliar para validar a senha
 def validar_senha(password):
     """
     Valida a senha:
@@ -36,17 +34,17 @@ def validar_senha(password):
     if not (4 <= len(password) <= 22):
         return False, "A senha deve ter entre 4 e 22 caracteres."
     
-    # Verifica se contém pelo menos um número (0-9)
+    #Verifica se contém pelo menos um número (0-9)
     if not re.search(r'\d', password):
         return False, "A senha deve conter pelo menos um número."
     
-    # Verifica se contém pelo menos um caractere especial (não-alfanumérico)
+    #Verifica se contém pelo menos um caractere especial
     if not re.search(r'[^\w\s]', password):
         return False, "A senha deve conter pelo menos um caractere especial (ex: !, @, #)."
         
     return True, ""
 
-# NOVA FUNÇÃO: Força a troca de senha após uso de código de backup
+
 def trocar_senha_forcada(username):
     user_data = usuarios[username]
     utils.limpar_tela()
@@ -57,7 +55,7 @@ def trocar_senha_forcada(username):
         nova_senha = input("Crie sua nova senha: ").strip()
         valida, mensagem_erro = validar_senha(nova_senha)
         if valida:
-            # Salva a nova senha
+            #Salva a nova senha
             user_data['senha'] = nova_senha
             print(utils.COR_SUCESSO + "\n✅ Senha alterada com sucesso! Seu acesso está seguro.")
             break
@@ -78,16 +76,15 @@ def cadastrar_usuario():
         else:
             break
     
-    # Solicitar e validar Email com domínio @ufrpe.br
     while True:
         email = input("Digite seu Email (@ufrpe.br obrigatório): ").strip()
-        # Regex para garantir que o email tem caracteres antes do @ e termina exatamente com @ufrpe.br
+        #Regex para garantir que o email tem caracteres antes do @ e termina exatamente com @ufrpe.br
         if re.fullmatch(r"[\w\.-]+@ufrpe\.br$", email):
             break
         else:
             print(utils.COR_AVISO + "❌ Email inválido. O domínio deve ser @ufrpe.br.")
 
-    # Validação de Senha 
+    #Validação de Senha 
     while True:
         password = input("Crie uma senha: ").strip()
         valida, mensagem_erro = validar_senha(password)
@@ -145,7 +142,7 @@ def cadastrar_usuario():
         ['iniciante', 'intermediario', 'avancado']
     )
     
-    # Geração dos Backup Codes
+    #Geração dos Backup Codes
     backup_codes = gerar_backup_codes()
     
     usuarios[username] = {
@@ -168,7 +165,6 @@ def cadastrar_usuario():
          print(f"- {code}")
     print(utils.COR_TITULO + "***************************")
 
-# FUNÇÃO VERIFICAR LOGIN REESTRUTURADA
 def verificar_login():
     utils.limpar_tela()
     print(utils.COR_TITULO + "\n--- ACESSAR CONTA ---")
@@ -180,32 +176,32 @@ def verificar_login():
 
     user_data = usuarios[username]
     
-    # 1. TENTATIVA DE LOGIN COM SENHA NORMAL (ÚNICA OPÇÃO INICIAL)
+    
     password = input("Digite sua senha: ").strip()
     
     if user_data['senha'] == password:
         print(utils.COR_SUCESSO + f"\n✅ Acesso liberado! Bem-vindo(a), {user_data['nome']}!")
         return username
     
-    # 2. SENHA INCORRETA -> LIBERAR "ESQUECI A SENHA"
+    
     else:
         print(utils.COR_ERRO + "\n❌ Senha incorreta.")
         
-        # Verifica se ainda há códigos de backup para oferecer a opção
+        
         if not user_data.get('backup_codes'):
             print(utils.COR_AVISO + "Você não possui códigos de backup restantes.")
             return None
         
-        # Pergunta sobre "Esqueci a Senha"
+        
         usa_backup = input("Esqueceu a senha? Deseja tentar com um Código de Backup? (S/N): ").strip().upper()
         
         if usa_backup == 'S':
             print(utils.COR_AVISO + f"Você tem {len(user_data['backup_codes'])} códigos de backup restantes.")
             backup_code = input("Digite um Código de Backup: ").strip()
             
-            # Tenta logar com Código de Backup
+            #Logar com backup codes
             if backup_code in user_data['backup_codes']:
-                # O código é de uso único, então é removido
+            
                 user_data['backup_codes'].remove(backup_code)
                 
                 print(utils.COR_SUCESSO + f"\n✅ Login bem-sucedido com Código de Backup! Bem-vindo(a), {user_data['nome']}!")
@@ -262,7 +258,7 @@ def editar_usuario(username):
         else:
             print(utils.COR_ERRO + "Entrada inválida. Digite 'M' ou 'F'.")
 
-    # Editar dados físicos
+    #Editar dados físicos
     while True:
         try:
             nova_idade_str = input(f"Idade ({user_data['idade']}): ").strip()
@@ -309,7 +305,7 @@ def editar_usuario(username):
 
 
 def excluir_usuario():
-    # Conteúdo da função excluir_usuario (sem alterações)
+    
     utils.limpar_tela()
     print(utils.COR_TITULO + "\n--- EXCLUIR PERFIL ---")
     username = input("Digite o nome de usuário que deseja excluir: ").strip()

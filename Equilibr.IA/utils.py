@@ -4,7 +4,7 @@ from colorama import Fore, Style, init
 init(autoreset=True)
 
 def limpar_tela():
-    """Limpa a tela do terminal, compatível com Windows, Mac e Linux."""
+    
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def pausar_tela():
