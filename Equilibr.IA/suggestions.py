@@ -18,15 +18,15 @@ def gerar_sugestao_dieta(tmb, peso, objetivo, nivel_treino):
 
     if objetivo == 'perder gordura':
         calorias_alvo = calorias_manutencao - 400  
-        proteina_g = peso * 2.0  
+        proteina_g = peso * 1.8  
         gordura_g = (calorias_alvo * 0.30) / 9
         carboidratos_g = (calorias_alvo - (proteina_g * 4) - (gordura_g * 9)) / 4
     elif objetivo == 'ganhar massa':
         calorias_alvo = calorias_manutencao + 300 
-        proteina_g = peso * 1.8
+        proteina_g = peso * 2.0
         gordura_g = (calorias_alvo * 0.25) / 9
         carboidratos_g = (calorias_alvo - (proteina_g * 4) - (gordura_g * 9)) / 4
-    else:  #Manter peso
+    else:  
         calorias_alvo = calorias_manutencao
         proteina_g = peso * 1.6
         gordura_g = (calorias_alvo * 0.30) / 9
