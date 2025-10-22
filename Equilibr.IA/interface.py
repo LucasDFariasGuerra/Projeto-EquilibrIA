@@ -23,7 +23,6 @@ def exibir_menu_logado(username):
 
 def exibir_dashboard(user_data):
     utils.limpar_tela()
-    # Coleta os dados do usuário
     peso = user_data['peso']
     altura = user_data['altura']
     sexo = user_data['sexo']
@@ -31,15 +30,12 @@ def exibir_dashboard(user_data):
     objetivo = user_data['objetivo']
     nivel_treino = user_data['nivel_treino']
     
-    # Usa as funções do módulo de cálculo
     imc = health_calculator.calcular_imc(peso, altura)
     tmb = health_calculator.calcular_tmb(sexo, peso, altura, idade)
     
-    # Usa as funções do módulo de sugestões
     dieta_sugestao = suggestions.gerar_sugestao_dieta(tmb, peso, objetivo, nivel_treino)
     treino_sugestao = suggestions.gerar_sugestao_treino(nivel_treino, objetivo,)
-    
-    # Exibe os resultados
+
     print(utils.COR_TITULO + "\n" + "="*20 + " SEU PAINEL DE SAÚDE " + "="*20)
     print(f"IMC: {imc:.2f} (Índice de Massa Corporal)")
     print(f"TMB: {tmb:.0f} kcal (Taxa Metabólica Basal diária)")
