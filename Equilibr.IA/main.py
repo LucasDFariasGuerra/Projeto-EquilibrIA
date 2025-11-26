@@ -1,63 +1,57 @@
-import user_manager
-import interface
-import utils 
+from user_manager import GerenciadorUsuarios
+from interface import InterfaceUsuario
+from utils import Utils
 
-def main():
-    """Função principal que executa o loop do aplicativo."""
-    
-    usuario_logado = None
+class EquilibrIA_App:
+    def __init__(self):
+        self.gerenciador = GerenciadorUsuarios()
+        self.usuario_logado = None # Objeto Usuario ou None
 
-    while True:
-        utils.limpar_tela()
-        if usuario_logado is None:
-            escolha = interface.exibir_menu_deslogado()
+    def executar(self):
+        while True:
+            Utils.limpar_tela()
+            
+            if self.usuario_logado is None:
+                escolha = InterfaceUsuario.exibir_menu_principal()
 
-            if escolha == '1':
-                user_manager.cadastrar_usuario()
-                utils.pausar_tela()
-            
-            elif escolha == '2':
-                username_valido = user_manager.verificar_login()
-                if username_valido:
-                    usuario_logado = username_valido
-                utils.pausar_tela()
-            
-            elif escolha == '0':
-                print("\nObrigado por usar o Equilibr.IA! Saindo...")
-                break
-            
+                if escolha == '1':
+                    self.gerenciador.cadastrar_usuario()
+                    Utils.pausar_tela()
+                
+                elif escolha == '2':
+                    usuario = self.gerenciador.autenticar()
+                    if usuario:
+                        self.usuario_logado = usuario
+                    Utils.pausar_tela()
+                
+                elif escolha == '0':
+                    print("Saindo...")
+                    break
+                else:
+                    print(Utils.COR_ERRO + "Opção inválida.")
+
             else:
-                print(utils.COR_ERRO + "\n Opção inválida. Por favor, tente novamente.")
+                escolha = InterfaceUsuario.exibir_menu_logado(self.usuario_logado)
 
-        #Menu de usuário
-        else:
-            escolha = interface.exibir_menu_logado(usuario_logado)
-            
-            if escolha == '1':
-                dados_do_usuario = user_manager.usuarios[usuario_logado]
-                interface.exibir_dashboard(dados_do_usuario)
-                utils.pausar_tela()
-            
-            elif escolha == '2':
-                #Edição de conta
-                user_manager.editar_usuario(usuario_logado)
-                utils.pausar_tela()
-            
-            elif escolha == '3':
-                user_manager.excluir_usuario()
-                #Exclusão de conta 
-                usuario_logado = None
-                utils.pausar_tela()
-            
-            elif escolha == '0':
-                print(utils.COR_SUCESSO + "\nFazendo logout...")
-                usuario_logado = None #Desloga o usuário
-                utils.pausar_tela()
-            
-            else:
-                print(utils.COR_ERRO + "\n❌ Opção inválida. Por favor, tente novamente.")
-                utils.pausar_tela()
+                if escolha == '1':
+                    InterfaceUsuario.exibir_dashboard(self.usuario_logado)
+                    Utils.pausar_tela()
 
-#Garante que a função main() só será executada quando este arquivo for o principal
+                elif escolha == '2':
+                    self.gerenciador.editar_usuario(self.usuario_logado)
+                    Utils.pausar_tela()
+
+                elif escolha == '3':
+                    excluiu = self.gerenciador.excluir_usuario(self.usuario_logado)
+                    if excluiu:
+                        self.usuario_logado = None
+                    Utils.pausar_tela()
+
+                elif escolha == '0':
+                    print("Logout realizado.")
+                    self.usuario_logado = None
+                    Utils.pausar_tela()
+
 if __name__ == "__main__":
-    main()
+    app = EquilibrIA_App()
+    app.executar()
