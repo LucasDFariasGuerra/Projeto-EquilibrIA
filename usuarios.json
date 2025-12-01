@@ -1,0 +1,77 @@
+{
+    "Diego": {
+        "username": "Diego",
+        "senha": "1234",
+        "nome": "Diego Luiz",
+        "sexo": "M",
+        "idade": 19,
+        "backup_codes": [
+            "64YCUV",
+            "374MA2",
+            "QUOBP5",
+            "AHWHJE"
+        ],
+        "peso": 70.0,
+        "altura": 1.68,
+        "objetivo": "perder gordura",
+        "nivel_treino": "intermediario",
+        "agua_hoje": 1000,
+        "meta_agua": 2450.0,
+        "historico_peso": [
+            {
+                "data": "01/12/2025",
+                "peso": 70.0
+            }
+        ]
+    },
+    "Lucas": {
+        "username": "Lucas",
+        "senha": "1234",
+        "nome": "Lucas Guerra",
+        "sexo": "M",
+        "idade": 18,
+        "backup_codes": [
+            "4Q1TPR",
+            "5XN77D",
+            "QXFGEK",
+            "7K3JGA"
+        ],
+        "peso": 75.0,
+        "altura": 1.8,
+        "objetivo": "perder gordura",
+        "nivel_treino": "avancado",
+        "agua_hoje": 1000,
+        "meta_agua": 2625.0,
+        "historico_peso": [
+            {
+                "data": "01/12/2025",
+                "peso": 75.0
+            }
+        ]
+    },
+    "João": {
+        "username": "João",
+        "senha": "1234",
+        "nome": "João Gomes",
+        "sexo": "M",
+        "idade": 23,
+        "backup_codes": [
+            "W5401S",
+            "HG392I",
+            "XE9Y8E",
+            "7VSE2H"
+        ],
+        "peso": 70.0,
+        "altura": 1.7,
+        "objetivo": "perder gordura",
+        "nivel_treino": "intermediario",
+        "agua_hoje": 0,
+        "meta_agua": 2450.0,
+        "historico_peso": [
+            {
+                "data": "01/12/2025",
+                "peso": 70.0
+            }
+        ]
+    }
+}

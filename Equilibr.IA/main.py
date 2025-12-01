@@ -5,7 +5,7 @@ from utils import Utils
 class EquilibrIA_App:
     def __init__(self):
         self.gerenciador = GerenciadorUsuarios()
-        self.usuario_logado = None # Objeto Usuario ou None
+        self.usuario_logado = None 
 
     def executar(self):
         while True:
@@ -25,7 +25,7 @@ class EquilibrIA_App:
                     Utils.pausar_tela()
                 
                 elif escolha == '0':
-                    print("Saindo...")
+                    print("Saindo e salvando...")
                     break
                 else:
                     print(Utils.COR_ERRO + "Opção inválida.")
@@ -38,10 +38,20 @@ class EquilibrIA_App:
                     Utils.pausar_tela()
 
                 elif escolha == '2':
-                    self.gerenciador.editar_usuario(self.usuario_logado)
+                    # Nova opção: Hidratação
+                    self.gerenciador.registrar_agua(self.usuario_logado)
                     Utils.pausar_tela()
 
                 elif escolha == '3':
+                    # Nova opção: Evolução
+                    InterfaceUsuario.exibir_evolucao(self.usuario_logado)
+                    Utils.pausar_tela()
+
+                elif escolha == '4':
+                    self.gerenciador.editar_usuario(self.usuario_logado)
+                    Utils.pausar_tela()
+
+                elif escolha == '5':
                     excluiu = self.gerenciador.excluir_usuario(self.usuario_logado)
                     if excluiu:
                         self.usuario_logado = None
