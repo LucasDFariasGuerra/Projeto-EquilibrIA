@@ -30,11 +30,10 @@ class GerenciadorUsuarios:
             return False, "A senha deve ter entre 4 e 22 caracteres."
         return True, "Senha válida."
 
+    
     def cadastrar_usuario(self):
         Utils.limpar_tela()
         print(Utils.COR_TITULO + "\n--- CADASTRO DE NOVO USUÁRIO ---")
-        
-        # 1. Dados de Acesso
         username = input("Nome de Usuário: ").strip()
         if username in self.usuarios:
             print(Utils.COR_ERRO + "Usuário já existe.")
@@ -46,9 +45,7 @@ class GerenciadorUsuarios:
             print(Utils.COR_ERRO + msg)
             return
 
-        # 2. Dados Pessoais
         nome = input("Nome Completo: ").strip()
-        
         while True:
             sexo = input("Sexo (M/F): ").strip().upper()
             if sexo in ['M', 'F']: break
@@ -57,49 +54,34 @@ class GerenciadorUsuarios:
         while True:
             try:
                 idade = int(input("Idade: "))
-                # LIMITAÇÃO DE IDADE: 0 a 100 anos
-                if 0 < idade <= 100: 
-                    break
+                if 0 < idade <= 100: break
                 print(Utils.COR_ERRO + "Idade inválida (Máximo: 100 anos).")
             except ValueError:
                 print(Utils.COR_ERRO + "Digite um número inteiro.")
 
-        # 3. Dados Físicos (OBRIGATÓRIO)
         print("\n" + Utils.COR_TITULO + "--- DADOS CORPORAIS E METAS ---")
-        
         while True:
             try:
                 peso = float(input("Peso atual (kg): "))
                 altura = float(input("Altura (m) (ex: 1.75): "))
-                
-                # LIMITAÇÃO DE PESO (250kg) E ALTURA (2.20m)
-                if (0 < peso <= 250) and (0.5 < altura <= 2.20): 
-                    break
-                
+                if (0 < peso <= 250) and (0.5 < altura <= 2.20): break
                 print(Utils.COR_ERRO + "Valores fora do limite (Max Peso: 250kg, Max Altura: 2.20m).")
             except ValueError:
-                print(Utils.COR_ERRO + "Digite apenas números (use ponto para decimais).")
+                print(Utils.COR_ERRO + "Digite apenas números.")
 
         print("\nEscolha seu Objetivo:")
-        print("1. Perder Gordura")
-        print("2. Ganhar Massa")
-        print("3. Manter Peso")
+        print("1. Perder Gordura | 2. Ganhar Massa | 3. Manter Peso")
         op_obj = input("Opção: ")
         mapa_obj = {'1': 'perder gordura', '2': 'ganhar massa', '3': 'manter peso'}
         objetivo = mapa_obj.get(op_obj, 'manter peso')
 
-        print("\nNível de Experiência em Treino:")
-        print("1. Iniciante")
-        print("2. Intermediário")
-        print("3. Avançado")
+        print("\nNível de Experiência: 1. Iniciante | 2. Intermediário | 3. Avançado")
         op_treino = input("Opção: ")
         mapa_treino = {'1': 'iniciante', '2': 'intermediario', '3': 'avancado'}
         nivel_treino = mapa_treino.get(op_treino, 'iniciante')
 
-        # Criação do Objeto
         backup_codes = self._gerar_backup_codes()
         novo_usuario = Usuario(username, senha, nome, sexo, idade, backup_codes)
-        
         novo_usuario.atualizar_dados_fisicos(peso, altura)
         novo_usuario.definir_meta(objetivo, nivel_treino)
         
@@ -113,9 +95,7 @@ class GerenciadorUsuarios:
         print(Utils.COR_TITULO + "\n--- LOGIN ---")
         username = input("Usuário: ").strip()
         senha = input("Senha: ").strip()
-
         usuario = self.usuarios.get(username)
-        
         if usuario and usuario.senha == senha:
             print(Utils.COR_SUCESSO + f"Bem-vindo, {usuario.nome}!")
             return usuario
@@ -127,22 +107,18 @@ class GerenciadorUsuarios:
         print(f"Editando perfil de {usuario_logado.nome}...")
         try:
             print(f"Peso atual: {usuario_logado.peso}kg | Altura atual: {usuario_logado.altura}m")
-            
-            
             novo_peso_str = input("Novo Peso (Enter para manter): ")
             nova_altura_str = input("Nova Altura (Enter para manter): ")
             
             p = float(novo_peso_str) if novo_peso_str else usuario_logado.peso
             a = float(nova_altura_str) if nova_altura_str else usuario_logado.altura
             
-            
             if p > 250 or a > 2.20:
-                print(Utils.COR_ERRO + "Valores acima do permitido (Max: 250kg, 2.20m). Alteração cancelada.")
+                print(Utils.COR_ERRO + "Valores acima do permitido.")
                 return
 
             usuario_logado.atualizar_dados_fisicos(p, a)
             self._salvar_dados()
-            
             print(Utils.COR_SUCESSO + "Dados atualizados!")
         except ValueError:
             print(Utils.COR_ERRO + "Erro nos valores numéricos.")
@@ -168,3 +144,8 @@ class GerenciadorUsuarios:
         else:
             print(Utils.COR_ERRO + "Senha incorreta.")
             return False
+
+    # --- NOVO: SALVAR PLANO GERADO ---
+    def salvar_plano_gerado(self, usuario_logado, dieta, treino):
+        usuario_logado.salvar_plano_ia(dieta, treino)
+        self._salvar_dados() # Escreve no JSON

@@ -1,29 +1,30 @@
+import os
 import google.generativeai as genai
 from utils import Utils
+from dotenv import load_dotenv 
 
-# --- SUA CHAVE (QUE FUNCIONOU NO TESTE) ---
-API_KEY = "AIzaSyDMff60jdApUbLa5NUvR9ctoGlq6yaNwGE" 
+
+load_dotenv()
+
+API_KEY = os.getenv("AIzaSyBCDsvcrfJh6dqcF11-8pBfLR3lsXwBrTQ")
 
 class GeradorSugestoes:
     
     @staticmethod
     def _consultar_ia(prompt):
-        # Verificação de segurança simples
-        if API_KEY == "SUA_CHAVE_NOVA_AQUI":
-            print(Utils.COR_ERRO + "ERRO: Chave não configurada.")
+        if not API_KEY:
+            print(Utils.COR_ERRO + "ERRO: Chave não encontrada no arquivo .env")
             return None 
 
         try:
             genai.configure(api_key=API_KEY)
             
-            # --- ATUALIZADO PARA O SEU MODELO DA LISTA ---
-            # Usando o Gemini 2.0 Flash (Rápido e Moderno)
             model = genai.GenerativeModel('gemini-2.0-flash')
             
             response = model.generate_content(prompt)
             return response.text
         except Exception as e:
-            # Mostra o erro se houver (para sabermos o que corrigir)
+            
             print(Utils.COR_ERRO + f"\n[ERRO DA IA]: {e}")
             return None
 
@@ -45,7 +46,7 @@ class GeradorSugestoes:
         if resposta_ia:
             return f"\n✨ **SUGESTÃO GERADA POR IA (GEMINI 2.0)** ✨\n{resposta_ia}"
 
-        # --- BACKUP (Caso falhe) ---
+        
         print(Utils.COR_ERRO + ">> IA falhou. Usando cálculo padrão.")
         
         fatores = {'iniciante': 1.2, 'intermediario': 1.375, 'avancado': 1.55}

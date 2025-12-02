@@ -34,24 +34,29 @@ class EquilibrIA_App:
                 escolha = InterfaceUsuario.exibir_menu_logado(self.usuario_logado)
 
                 if escolha == '1':
-                    InterfaceUsuario.exibir_dashboard(self.usuario_logado)
+                    # Apenas mostra status (Rápido)
+                    InterfaceUsuario.exibir_dashboard_status(self.usuario_logado)
                     Utils.pausar_tela()
 
                 elif escolha == '2':
-                    # Nova opção: Hidratação
-                    self.gerenciador.registrar_agua(self.usuario_logado)
+                    # GERA (Lento, usa IA) e SALVA
+                    InterfaceUsuario.gerar_e_salvar_plano(self.usuario_logado, self.gerenciador)
                     Utils.pausar_tela()
 
                 elif escolha == '3':
-                    # Nova opção: Evolução
-                    InterfaceUsuario.exibir_evolucao(self.usuario_logado)
+                    # LÊ DO JSON (Rápido)
+                    InterfaceUsuario.exibir_plano_salvo(self.usuario_logado)
                     Utils.pausar_tela()
 
                 elif escolha == '4':
-                    self.gerenciador.editar_usuario(self.usuario_logado)
+                    InterfaceUsuario.exibir_evolucao(self.usuario_logado)
                     Utils.pausar_tela()
 
                 elif escolha == '5':
+                    self.gerenciador.editar_usuario(self.usuario_logado)
+                    Utils.pausar_tela()
+
+                elif escolha == '6':
                     excluiu = self.gerenciador.excluir_usuario(self.usuario_logado)
                     if excluiu:
                         self.usuario_logado = None

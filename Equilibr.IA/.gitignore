@@ -1,3 +1,3 @@
-# Ignorar pastas de cache e arquivos compilados do Python
+.env
 __pycache__/
 *.pyc
