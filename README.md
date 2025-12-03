@@ -21,11 +21,129 @@ Este projeto foi desenvolvido com o objetivo de auxiliar no acompanhamento de sa
 Esta é apenas a primeira versão do aplicativo. Futuras atualizações incluirão novas funcionalidades e melhorias para oferecer uma experiência mais completa e eficiente.
 
 ## Second Release (V2).
+Nesta segunda release, o código sofreu uma refatoração robusta para integrar inteligência generativa e funcionalidades de segurança avançada. O foco saiu de algoritmos estáticos para consultas dinâmicas e personalizadas.
 
-Na segunda release, o aplicativo recebeu melhorias importantes voltadas para engajamento e inclusão, ampliando sua utilidade e acessibilidade.
+1. Personal Trainer e Nutricionista com IA (suggestions.py)
+A maior inovação desta versão. O sistema foi integrado à API do Google Gemini (IA Generativa).
 
-● Uma das novas funcionalidades é o acompanhamento de progresso, que permite ao usuário visualizar sua evolução ao longo do tempo. Além disso, foi implementado um sistema de ranking, desenvolvido para aumentar a motivação e tornar a jornada mais dinâmica e envolvente.
+ ● Dietas Dinâmicas: Ao invés de frases prontas, o módulo suggestions.py envia os dados do usuário (TMB, Peso, Objetivo) para a IA, que retorna um cardápio único e calculado especificamente para aquele momento.
 
-● Outra novidade é a inclusão de treinos adaptados para Pessoas com Deficiência (PcDs). Essa funcionalidade garante maior acessibilidade, oferecendo planos personalizados que respeitam as necessidades e limitações individuais, sem comprometer a eficácia do treino.
+ ● Treinos Personalizados: A IA analisa a idade e o nível de treino (iniciante/avançado) para escrever uma rotina de exercícios detalhada.
 
-● Com essas melhorias, a segunda versão do aplicativo reforça seu compromisso em oferecer uma experiência mais inclusiva e motivadora, atendendo diferentes perfis de usuários.Uma das novas funcionalidades é o acompanhamento de progresso, que permite ao usuário visualizar sua evolução ao longo do tempo. Além disso, foi implementado um sistema de ranking, desenvolvido para aumentar a motivação e tornar a jornada mais dinâmica e envolvente.
+2. Persistência de Dados (database.py):
+ ● Sistema de salvamento local em JSON para manter os dados dos usuários seguros entre as execuções.
+
+
+4. Recuperação de Conta via E-mail (user_manager.py)
+A segurança foi aprimorada com a implementação de protocolos SMTP.
+
+ ● Esqueci Minha Senha: Agora é possível solicitar a recuperação de senha. O sistema envia automaticamente um e-mail com um código de verificação para o endereço cadastrado, permitindo a redefinição segura da senha.
+
+ ● Backup Codes: Geração de códigos de emergência no momento do cadastro.
+
+4. Dashboard de Evolução e Hidratação (interface.py)
+A interface foi expandida para permitir o acompanhamento diário:
+
+ ● Monitoramento de Água: O usuário pode registrar o consumo de água ao longo do dia e o sistema compara com a meta diária (calculada baseada no peso: 35ml/kg).
+
+ ● Histórico de Peso: O sistema agora armazena um histórico de pesagens, exibindo uma tabela de evolução que mostra a variação de peso ao longo do tempo, alertando caso o usuário fique muito tempo sem se pesar.
+
+O projeto é modularizado para facilitar a manutenção e escalabilidade:
+
+ ● main.py: O ponto de entrada. Gerencia o loop principal da aplicação e a navegação entre menus.
+
+ ● suggestions.py: Módulo responsável pela conexão com a API google-generativeai. Contém os prompts de engenharia para gerar dietas e treinos.
+
+ ● user_manager.py: Controla a lógica de negócios do usuário (login, cadastro, envio de e-mail e validação de senhas).
+
+ ● health_calculator.py: Contém a matemática pura (fórmulas de TMB, IMC).
+
+ ● database.py: Módulo que manipula o arquivo usuarios.json.
+
+ ● interface.py: Cuida de toda a parte visual (prints, tabelas e menus coloridos).
+
+ ● utils.py: Utilitários gerais como limpeza de tela, pausas e cores (Colorama).
+
+ 📚 Bibliotecas Externas Utilizadas
+google-generativeai: Para inteligência artificial.
+
+python-dotenv: Para gerenciamento de variáveis de ambiente (Chaves de API).
+
+colorama: Para estilização do terminal.
+
+smtplib (Nativa): Para envio de e-mails.
+
+⚙️ Configuração (Environment)
+
+Para que as funcionalidades de Dieta/Treino com IA e Recuperação de Senha funcionem, você precisa configurar o ambiente corretamente. Siga os passos abaixo.
+
+1. Instalação das Bibliotecas
+O projeto depende de bibliotecas externas para conectar com o Google Gemini, gerenciar variáveis de ambiente e colorir o terminal.
+
+Abra o seu terminal na pasta do projeto.
+
+Execute o seguinte comando para instalar tudo de uma vez:
+
+pip install google-generativeai python-dotenv colorama
+
+Nota: As bibliotecas smtplib, json, os, math, random e datetime já vêm instaladas por padrão no Python.
+
+2. Gerando a API Key do Google (Gemini)
+Para que o "Personal Trainer" e o "Nutricionista" funcionem, você precisa de uma chave gratuita do Google.
+
+Acesse o Google AI Studio: https://aistudio.google.com/
+
+Faça login com sua conta Google.
+
+No menu esquerdo, clique em "Get API key" (Obter chave de API).
+
+Clique no botão "Create API key".
+
+Selecione um projeto existente ou crie um novo.
+
+Copie o código gerado (começa geralmente com AIza...).
+
+3. Gerando a Senha de App (Para envio de E-mail)
+Para a recuperação de senha funcionar, o sistema usa o Gmail. Por segurança, o Google não aceita sua senha normal. Você precisa criar uma "Senha de App".
+
+⚠️ Importante: Para isso funcionar, a "Verificação em duas etapas" da sua conta Google precisa estar ATIVADA.
+
+Acesse as configurações da sua Conta Google: https://myaccount.google.com/
+
+No menu esquerdo, clique em Segurança.
+
+Na barra de busca no topo, digite "Senhas de app" (ou "App passwords") e clique na opção.
+
+Dê um nome para o app (ex: EquilibrIA) e clique em Criar.
+
+O Google vai gerar uma senha de 16 letras (ex: xyza bcde fghi jklm).
+
+Copie essa senha. (Você usará ela sem os espaços).
+
+4. Configurando o Arquivo .env
+O sistema busca essas chaves em um arquivo oculto para não expor suas senhas na internet.
+
+Na pasta raiz do projeto (a mesma onde está o main.py), crie um arquivo novo chamado .env (apenas .env, sem nome antes do ponto).
+
+Abra esse arquivo com o Bloco de Notas ou VS Code.
+
+Cole o conteúdo abaixo, substituindo pelos seus dados gerados nos passos anteriores:
+
+Snippet de código
+
+# Chave da Inteligência Artificial (Passo 2)
+API_KEY="COLE_SUA_CHAVE_AIZA_AQUI"
+
+# Configurações de E-mail (Passo 3)
+EMAIL_REMETENTE="seu_email@gmail.com"
+EMAIL_SENHA="cole sua senha de app aqui sem espaços"
+Exemplo real de como deve ficar: EMAIL_SENHA="xyzabcdefghijklm" (tudo junto).
+
+
+
+
+
+
+
+
+ 
