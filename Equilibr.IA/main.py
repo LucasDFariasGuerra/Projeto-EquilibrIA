@@ -13,13 +13,20 @@ class EquilibrIA_App:
             
             if self.usuario_logado is None:
                 escolha = InterfaceUsuario.exibir_menu_principal()
+                
                 if escolha == '1':
                     self.gerenciador.cadastrar_usuario()
                     Utils.pausar_tela()
+                
                 elif escolha == '2':
                     usuario = self.gerenciador.autenticar()
                     if usuario: self.usuario_logado = usuario
                     Utils.pausar_tela()
+                
+                elif escolha == '3': # NOVA OPÇÃO: RECUPERAR SENHA
+                    self.gerenciador.recuperar_senha()
+                    Utils.pausar_tela()
+                
                 elif escolha == '0':
                     print("Saindo e salvando...")
                     break
@@ -29,35 +36,28 @@ class EquilibrIA_App:
             else:
                 escolha = InterfaceUsuario.exibir_menu_logado(self.usuario_logado)
 
-                if escolha == '1': # Dashboard
+                if escolha == '1': 
                     InterfaceUsuario.exibir_dashboard_status(self.usuario_logado)
                     Utils.pausar_tela()
-
-                elif escolha == '2': # REGISTRAR ÁGUA (Nova posição)
+                elif escolha == '2': 
                     self.gerenciador.registrar_agua(self.usuario_logado)
                     Utils.pausar_tela()
-
-                elif escolha == '3': # Gerar IA
+                elif escolha == '3': 
                     InterfaceUsuario.gerar_e_salvar_plano(self.usuario_logado, self.gerenciador)
                     Utils.pausar_tela()
-
-                elif escolha == '4': # Ver Plano
+                elif escolha == '4': 
                     InterfaceUsuario.exibir_plano_salvo(self.usuario_logado)
                     Utils.pausar_tela()
-
-                elif escolha == '5': # Evolução
+                elif escolha == '5': 
                     InterfaceUsuario.exibir_evolucao(self.usuario_logado)
                     Utils.pausar_tela()
-
-                elif escolha == '6': # Editar
+                elif escolha == '6': 
                     self.gerenciador.editar_usuario(self.usuario_logado)
                     Utils.pausar_tela()
-
-                elif escolha == '7': # Excluir
+                elif escolha == '7': 
                     excluiu = self.gerenciador.excluir_usuario(self.usuario_logado)
                     if excluiu: self.usuario_logado = None
                     Utils.pausar_tela()
-
                 elif escolha == '0':
                     print("Logout realizado.")
                     self.usuario_logado = None

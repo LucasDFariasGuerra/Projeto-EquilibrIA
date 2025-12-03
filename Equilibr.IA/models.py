@@ -1,10 +1,11 @@
 from datetime import datetime
 
 class Usuario:
-    def __init__(self, username, senha, nome, sexo, idade, backup_codes):
+    def __init__(self, username, senha, nome, email, sexo, idade, backup_codes):
         self.username = username
         self.senha = senha
         self.nome = nome
+        self.email = email  # NOVO CAMPO
         self.sexo = sexo
         self.idade = idade
         self.backup_codes = backup_codes
@@ -33,7 +34,6 @@ class Usuario:
 
         if mudou_peso and self.peso > 0:
             data_atual = datetime.now().strftime("%d/%m/%Y")
-            # Se já pesou hoje, atualiza. Se não, cria registro novo.
             if self.historico_peso and self.historico_peso[-1]['data'] == data_atual:
                 self.historico_peso[-1]['peso'] = self.peso
             else:
@@ -51,22 +51,19 @@ class Usuario:
         self.plano_treino = texto_treino
         self.data_plano = datetime.now().strftime("%d/%m/%Y")
 
-    # --- NOVO: Lógica para checar atualização mensal ---
     def dias_sem_atualizar_peso(self):
-        """Retorna quantos dias faz que o usuário não atualiza o peso."""
         if not self.historico_peso:
             return 0
-        
         ultima_data_str = self.historico_peso[-1]['data']
         ultima_data_obj = datetime.strptime(ultima_data_str, "%d/%m/%Y")
         agora = datetime.now()
-        
         diferenca = agora - ultima_data_obj
         return diferenca.days
 
     def to_dict(self):
         return {
             "username": self.username, "senha": self.senha, "nome": self.nome,
+            "email": self.email, # SALVANDO EMAIL
             "sexo": self.sexo, "idade": self.idade, "backup_codes": self.backup_codes,
             "peso": self.peso, "altura": self.altura, "objetivo": self.objetivo,
             "nivel_treino": self.nivel_treino, "agua_hoje": self.agua_hoje,
@@ -77,8 +74,10 @@ class Usuario:
 
     @classmethod
     def from_dict(cls, data):
+        # O .get('email', '') garante que usuários antigos sem email não quebrem o sistema
         user = cls(
             data['username'], data['senha'], data['nome'], 
+            data.get('email', 'sem_email@sistema'), # RECUPERANDO EMAIL
             data['sexo'], data['idade'], data['backup_codes']
         )
         user.peso = data.get('peso', 0.0)
