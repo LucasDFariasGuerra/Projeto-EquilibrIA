@@ -26,43 +26,43 @@ Nesta segunda release, o código sofreu uma refatoração robusta para integrar 
 1. Personal Trainer e Nutricionista com IA (suggestions.py)
 A maior inovação desta versão. O sistema foi integrado à API do Google Gemini (IA Generativa).
 
- ● Dietas Dinâmicas: Ao invés de frases prontas, o módulo suggestions.py envia os dados do usuário (TMB, Peso, Objetivo) para a IA, que retorna um cardápio único e calculado especificamente para aquele momento.
+   ● Dietas Dinâmicas: Ao invés de frases prontas, o módulo suggestions.py envia os dados do usuário (TMB, Peso, Objetivo) para a IA, que retorna um cardápio único e calculado especificamente para aquele momento.
 
- ● Treinos Personalizados: A IA analisa a idade e o nível de treino (iniciante/avançado) para escrever uma rotina de exercícios detalhada.
+   ● Treinos Personalizados: A IA analisa a idade e o nível de treino (iniciante/avançado) para escrever uma rotina de exercícios detalhada.
 
 2. Persistência de Dados (database.py):
- ● Sistema de salvamento local em JSON para manter os dados dos usuários seguros entre as execuções.
+   ● Sistema de salvamento local em JSON para manter os dados dos usuários seguros entre as execuções.
 
 
 4. Recuperação de Conta via E-mail (user_manager.py)
 A segurança foi aprimorada com a implementação de protocolos SMTP.
 
- ● Esqueci Minha Senha: Agora é possível solicitar a recuperação de senha. O sistema envia automaticamente um e-mail com um código de verificação para o endereço cadastrado, permitindo a redefinição segura da senha.
+   ● Esqueci Minha Senha: Agora é possível solicitar a recuperação de senha. O sistema envia automaticamente um e-mail com um código de verificação para o endereço cadastrado, permitindo a redefinição segura da senha.
 
- ● Backup Codes: Geração de códigos de emergência no momento do cadastro.
+   ● Backup Codes: Geração de códigos de emergência no momento do cadastro.
 
 4. Dashboard de Evolução e Hidratação (interface.py)
 A interface foi expandida para permitir o acompanhamento diário:
 
- ● Monitoramento de Água: O usuário pode registrar o consumo de água ao longo do dia e o sistema compara com a meta diária (calculada baseada no peso: 35ml/kg).
+  ● Monitoramento de Água: O usuário pode registrar o consumo de água ao longo do dia e o sistema compara com a meta diária (calculada baseada no peso: 35ml/kg).
 
- ● Histórico de Peso: O sistema agora armazena um histórico de pesagens, exibindo uma tabela de evolução que mostra a variação de peso ao longo do tempo, alertando caso o usuário fique muito tempo sem se pesar.
+  ● Histórico de Peso: O sistema agora armazena um histórico de pesagens, exibindo uma tabela de evolução que mostra a variação de peso ao longo do tempo, alertando caso o usuário fique muito tempo sem se pesar.
 
-O projeto é modularizado para facilitar a manutenção e escalabilidade:
+5. O projeto é modularizado para facilitar a manutenção e escalabilidade:
 
- ● main.py: O ponto de entrada. Gerencia o loop principal da aplicação e a navegação entre menus.
+   ● main.py: O ponto de entrada. Gerencia o loop principal da aplicação e a navegação entre menus.
 
- ● suggestions.py: Módulo responsável pela conexão com a API google-generativeai. Contém os prompts de engenharia para gerar dietas e treinos.
+   ● suggestions.py: Módulo responsável pela conexão com a API google-generativeai. Contém os prompts de engenharia para gerar dietas e treinos.
 
- ● user_manager.py: Controla a lógica de negócios do usuário (login, cadastro, envio de e-mail e validação de senhas).
+   ● user_manager.py: Controla a lógica de negócios do usuário (login, cadastro, envio de e-mail e validação de senhas).
 
- ● health_calculator.py: Contém a matemática pura (fórmulas de TMB, IMC).
+   ● health_calculator.py: Contém a matemática pura (fórmulas de TMB, IMC).
+  
+   ● database.py: Módulo que manipula o arquivo usuarios.json.
 
- ● database.py: Módulo que manipula o arquivo usuarios.json.
+   ● interface.py: Cuida de toda a parte visual (prints, tabelas e menus coloridos).
 
- ● interface.py: Cuida de toda a parte visual (prints, tabelas e menus coloridos).
-
- ● utils.py: Utilitários gerais como limpeza de tela, pausas e cores (Colorama).
+   ● utils.py: Utilitários gerais como limpeza de tela, pausas e cores (Colorama).
 
  📚 Bibliotecas Externas Utilizadas
 google-generativeai: Para inteligência artificial.
